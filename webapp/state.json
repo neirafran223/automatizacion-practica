@@ -1,0 +1,32 @@
+{
+ "bases": [
+  {
+   "nombre": "Ripholia_Normal(15%)",
+   "archivo": "Ripholia_Normal(15%).xlsx",
+   "activa": true
+  }
+ ],
+ "complementos": [
+  "Ripholia_Precios_15.xlsx"
+ ],
+ "fotos": "_URL Fotos.xlsx",
+ "plantilla": "vestuarios-medicos.xlsx",
+ "outdir": "C:\\Users\\neira\\OneDrive\\Escritorio\\PlanillasML-Web\\salida",
+ "marketplace": "",
+ "categoria": "Delantal",
+ "prefijo": "",
+ "limite": "3",
+ "modelos": "RIP-2509",
+ "usar_ml": true,
+ "max_ml": "0",
+ "usar_ia": false,
+ "predecir_cat": false,
+ "cuenta": "",
+ "prefijo_sku": "",
+ "color_defecto": "",
+ "ultima_salida": "C:\\Users\\neira\\OneDrive\\Escritorio\\PlanillasML-Web\\salida\\planilla.xlsx",
+ "plantilla_actual": "Publicar-11-18-12_28_53.xlsx",
+ "plantilla_categorias": [
+  "Vestuario y Calzado > Calzado > Pantuflas"
+ ]
+}

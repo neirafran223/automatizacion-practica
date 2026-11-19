@@ -1,0 +1,74 @@
+PLANILLAS ML · CONVERTIR PLANILLA ANTIGUA AL FORMATO NUEVO
+==========================================================
+
+Webapp local que convierte planillas viejas de Mercado Libre (ya
+rellenadas) al formato nuevo que descargás de ML. Reutiliza la lógica de
+RellenarPlanilla (debe estar al lado, en Escritorio\RellenarPlanilla).
+
+CÓMO ARRANCAR
+1. Doble clic a iniciar.bat
+   - Primera vez: crea venv e instala flask (1 minuto, necesita internet)
+   - Abre el navegador en http://127.0.0.1:8778
+2. Cerrás con la X de la ventana negra.
+
+FLUJO DE CONVERSIÓN (sección "Convertir planilla antigua")
+  1. Planillas viejas con datos: arrastrá una o varias (.xlsx o .xlsm).
+     Quedan en lista como "N planilla(s) lista(s) para convertir".
+  2. Plantilla nueva de Mercado Libre: arrastrá el .xlsx que descargaste
+     de ML. Se guarda y aparece "Plantilla cargada: <nombre> ·
+     categorías: ... · lista para convertir".
+  3. Convertir al formato nuevo: el botón se habilita cuando hay
+     plantilla cargada y planillas para convertir.
+     - Varias planillas juntas: salen UN solo archivo
+       planillas-combinadas-nuevo-formato.xlsx.
+     - Una sola planilla: sale <nombre>-nuevo-formato.xlsx.
+  4. Conversión lista: resumen por archivo (filas, hoja, columnas
+     descartadas y contadores) con el botón de descarga. Los archivos
+     quedan en la carpeta salida\.
+
+REGLAS QUE SE RESPETAN
+- La plantilla nueva manda: nunca se pisa una fórmula. La hoja
+  "extra info" y las hojas que no se usan quedan idénticas.
+- Cada planilla vieja va a su hoja según la categoría del producto. Si
+  la plantilla no tiene esa categoría, se informa el error y el listado
+  de categorías que sí tiene.
+- Filas consecutivas por producto (variantes juntas): UNA fila en blanco
+  entre productos distintos y otra entre planillas, y esas filas quedan
+  realmente vacías (sin "Nuevo", "$", ni ningún valor por defecto).
+- Título: sin "Ripholia", traducido al español (ciertas palabras en
+  inglés se mantienen), máximo 60 caracteres cortando en palabra y sin
+  el SKU adosado.
+- Fotos: todas las URLs se copian tal cual, incluidos los .webp.
+- SKU y MODELO llevan el prefijo H- (si ya lo traen no se toca; si no,
+  se agrega). El contador "SKU sin H-" informa cuántos venían sin el
+  prefijo.
+- EAN: se valida (13 dígitos con dígito verificador) y que no esté
+  repetido; si no pasa, se genera uno nuevo.
+- SKU repetidos dentro de la misma corrida se omiten (contador "SKU
+  repetidos omitidos").
+- Columnas de la planilla vieja que no existen en la plantilla nueva se
+  listan como descartadas.
+
+BOTONES
+- Borrar planillas subidas: vacía la lista de planillas viejas (pide
+  confirmación).
+- Borrar plantilla: quita la plantilla nueva cargada (pide
+  confirmación).
+
+QUÉ NO TOCA
+- No modifica tus Excel de origen.
+- No pisa RellenarPlanilla: esa app sigue funcionando igual.
+
+REQUISITOS
+- Python 3.9+ (Add to PATH).
+- RellenarPlanilla al lado (Escritorio\RellenarPlanilla).
+- Archivos .xlsx o .xlsm.
+
+SOLUCIÓN DE PROBLEMAS
+- "No encontré RellenarPlanilla": debe estar en
+  Escritorio\RellenarPlanilla (al lado de PlanillasML-Web).
+- "Categoría no encontrada": la plantilla nueva no tiene la hoja de esa
+  categoría; subí la plantilla que corresponda (el error lista las que
+  tiene).
+- Puerto 8778 ocupado: otra copia abierta; cerrala.
+- Si el navegador no abre: visita http://127.0.0.1:8778 a mano.

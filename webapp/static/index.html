@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Planillas · Generador</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header>
+  <div class="brand">
+    <img src="/static/ml.svg" alt="" class="logo">
+    <div>
+      <h1>Planillas</h1>
+      <p class="sub">Generador por marketplace</p>
+    </div>
+  </div>
+  <div class="header-der">
+    <button id="btn-archivos" class="icono" type="button"
+            title="Archivos de entrada (ya integrados en la web)">Archivos</button>
+    <span id="estado-rp" class="badge"></span>
+  </div>
+</header>
+
+<main>
+  <!-- GENERAR · guardada por ahora: ver MOSTRAR_GENERAR en app.js -->
+  <section id="paso1" class="paso oculto">
+    <h2>Generar planilla
+      <span class="eyebrow">elegí la categoría y listo</span></h2>
+
+    <!-- panel de archivos: solo se abre con el botón del header -->
+    <details id="panel-archivos">
+      <summary>Archivos de entrada — ya están dentro de la web</summary>
+      <div class="grid">
+        <!-- bases -->
+        <div class="field ancho">
+          <span class="etiqueta">Bases de productos <b>*</b></span>
+          <ul id="lista-bases" class="catalogo"></ul>
+          <details class="agregar">
+            <summary>Agregar otro Excel de productos</summary>
+            <div class="drop" data-tipo="bases" data-multiple="1">
+              <p><b>Arrastrá tus Excel de productos acá</b></p>
+              <p class="drop-o">o <button type="button" class="link">elegí archivos</button>
+                <span class="drop-hint">.xlsx · puedes agregar varios</span></p>
+              <input type="file" accept=".xlsx,.xlsm" multiple hidden>
+            </div>
+            <label class="mini-label">Ya subidos (no en el catálogo):
+              <select id="sel-bases-libres"><option value="">—</option></select>
+            </label>
+          </details>
+        </div>
+
+        <!-- complemento -->
+        <div class="field ancho">
+          <span class="etiqueta">Complemento (opcional)</span>
+          <ul id="lista-compl" class="catalogo"></ul>
+          <details class="agregar">
+            <summary>Agregar Excel de complemento</summary>
+            <div class="drop" data-tipo="complementos" data-multiple="1">
+              <p><b>Arrastrá el Excel de complemento</b></p>
+              <p class="drop-o">o <button type="button" class="link">elegir archivo</button></p>
+              <input type="file" accept=".xlsx,.xlsm" multiple hidden>
+            </div>
+          </details>
+        </div>
+
+        <!-- fotos -->
+        <div class="field">
+          <span class="etiqueta">Fotos URL (opcional)</span>
+          <select id="sel-fotos"></select>
+          <small id="fotos-actual" class="hint"></small>
+          <details class="agregar">
+            <summary>Agregar Excel de fotos</summary>
+            <div class="drop" data-tipo="fotos">
+              <p><b>Arrastrá el Excel de fotos</b></p>
+              <p class="drop-o">o <button type="button" class="link">elegir archivo</button></p>
+              <input type="file" accept=".xlsx,.xlsm" hidden>
+            </div>
+          </details>
+        </div>
+
+        <!-- plantilla: subida -->
+        <div class="field">
+          <span class="etiqueta">Subir otra plantilla de categoría</span>
+          <details class="agregar">
+            <summary>Agregar plantilla de categoría</summary>
+            <div class="drop" data-tipo="plantillas-categorias">
+              <p><b>Arrastrá la plantilla vacía de la categoría</b></p>
+              <p class="drop-o">o <button type="button" class="link">elegir archivo</button></p>
+              <input type="file" accept=".xlsx,.xlsm" hidden>
+            </div>
+          </details>
+        </div>
+      </div>
+    </details>
+
+    <div class="grid">
+      <!-- plantilla: la elige el usuario, es lo que define dónde se escribe -->
+      <label class="field ancho">
+        <span class="etiqueta">Plantilla <b>*</b>
+          <span class="ya">plantillas vacías · elegís la categoría</span></span>
+        <select id="sel-plantilla"></select>
+        <small id="plantilla-actual" class="hint"></small>
+      </label>
+
+      <label class="field ancho">
+        <span class="etiqueta">Categoría a rellenar</span>
+        <select id="f-categoria"></select>
+      </label>
+
+      <label class="field ancho">
+        <span class="etiqueta">Marketplace</span>
+        <select id="f-marketplace">
+          <option value="">Autodetectar por plantilla</option>
+        </select>
+        <small id="mp-detectado" class="hint"></small>
+      </label>
+    </div>
+
+    <details class="avanzado">
+      <summary>Opciones avanzadas (casi nunca se cambian)</summary>
+      <div class="grid">
+        <label class="field">
+          <span class="etiqueta">Cuenta destino</span>
+          <select id="f-cuenta">
+            <option value="">Sin cuenta</option>
+            <option>Ripholia</option>
+            <option>Crazy Family</option>
+            <option>Abizi</option>
+            <option>Ofertas Imperdibles</option>
+            <option>Moisés</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span class="etiqueta">Prefijo de modelo (opcional)</span>
+          <select id="f-prefijo"><option value="">Todos</option></select>
+        </label>
+
+        <label class="field">
+          <span class="etiqueta">Modelos a generar (0 = todos)</span>
+          <input type="number" id="f-limite" min="0" value="0">
+        </label>
+
+        <label class="field">
+          <span class="etiqueta">Prefijo SKU de salida (ej. L: L-RIP-…)</span>
+          <input type="text" id="f-prefijo-sku" placeholder="vacío = sin cambio" maxlength="8">
+        </label>
+
+        <label class="field ancho">
+          <span class="etiqueta">Modelo(s) específico(s) — separados por coma</span>
+          <input type="text" id="f-modelos" placeholder="RIP-AMAPOLA-1, RIP-101-1 (opcional)">
+        </label>
+
+        <label class="check">
+          <input type="checkbox" id="f-usar-ml" checked>
+          Completar datos faltantes con publicaciones de Mercado Libre
+        </label>
+        <label class="field">
+          <span class="etiqueta">Máx. productos ML (0 = todos)</span>
+          <input type="number" id="f-max-ml" min="0" value="30">
+        </label>
+        <label class="check">
+          <input type="checkbox" id="f-predecir-cat">
+          Predecir categorías ML que falten (usa internet, tarda 1-3 min)
+        </label>
+      </div>
+    </details>
+
+    <div class="acciones">
+      <button id="btn-generar" class="primario" disabled>Generar planilla</button>
+      <button id="btn-analizar" class="secundario">Reanalizar</button>
+      <span id="estado-analisis" class="estado"></span>
+    </div>
+    <div id="upload-estado" class="estado"></div>
+  </section>
+
+  <!-- PROGRESO · aparece debajo en cuanto se genera (guardada, ver MOSTRAR_GENERAR) -->
+  <section id="paso2" class="paso oculto">
+    <h2>Generando…
+      <span id="badge-gen" class="badge badge-curso">En curso</span></h2>
+    <div class="progress-wrap">
+      <div class="barra"><div id="barra" class="barra-fill" style="width:0%"></div></div>
+      <p id="fase">Preparando…</p>
+      <p id="detalle" class="detalle"></p>
+    </div>
+    <pre id="log" class="log"></pre>
+    <div class="acciones">
+      <button id="btn-cancelar" class="peligro">Cancelar</button>
+      <button id="btn-reintentar" class="secundario oculto">Reintentar</button>
+    </div>
+
+    <div id="resultado" class="resultado oculto">
+      <h3>Planilla generada
+        <span class="eyebrow">resumen</span></h3>
+      <p id="resumen"></p>
+      <div id="validacion" class="avisos"></div>
+      <div class="acciones">
+        <a id="btn-descargar" class="primario" href="#">Descargar xlsx</a>
+        <button id="btn-editar" class="secundario" type="button">Editar planilla</button>
+        <button id="btn-fotos" class="secundario" type="button">Ver fotos</button>
+        <button id="btn-preview" class="secundario">Vista previa</button>
+        <button id="btn-nuevo" class="secundario">Generar otra</button>
+      </div>
+
+      <!-- revisión de fotos de la planilla -->
+      <div id="fotos-panel" class="panel-res oculto">
+        <h4>Fotos de la planilla
+          <span id="fotos-resumen"></span></h4>
+        <div id="fotos-lista" class="fotos-lista"></div>
+        <div id="fotos-sin" class="avisos"></div>
+      </div>
+
+      <!-- editor de celdas antes de descargar -->
+      <div id="editor-panel" class="panel-res oculto">
+        <h4>Editar planilla
+          <span class="eyebrow">corregir antes de descargar</span></h4>
+        <p class="hint">Tocá una celda para corregirla. Los cambios se guardan
+          en el mismo archivo que vas a descargar.</p>
+        <div class="tabla-wrap"><table id="tabla-editor"></table></div>
+        <div class="acciones">
+          <button id="btn-guardar" class="primario" type="button" disabled>Guardar cambios</button>
+          <button id="btn-descartar" class="secundario" type="button">Descartar</button>
+          <span id="editor-estado" class="estado"></span>
+        </div>
+      </div>
+
+      <div id="preview" class="oculto">
+        <h4>Vista previa (primeras filas)</h4>
+        <div class="tabla-wrap"><table id="tabla-preview"></table></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONVERTIR · planillas viejas rellenadas al formato nuevo de ML -->
+  <section id="paso-convertir" class="paso">
+    <h2>Convertir planilla antigua
+      <span class="eyebrow">al formato nuevo de Mercado Libre</span></h2>
+
+    <div class="grid">
+      <!-- "Planillas ya en la web": lista guardada, oculta por ahora
+           (la conversión se hace subiendo las planillas acá abajo) -->
+      <label class="field ancho oculto">
+        <span class="etiqueta">Planillas ya en la web</span>
+        <select id="sel-fuente"><option value="">— elegir una planilla —</option></select>
+        <small id="fuente-hint" class="hint"></small>
+      </label>
+
+      <div class="field ancho">
+        <span class="etiqueta">Planillas viejas con datos</span>
+        <div class="drop" data-convertir="1">
+          <p><b>Arrastrá las planillas rellenadas acá</b></p>
+          <p class="drop-o">o <button type="button" class="link">elegir archivos</button>
+            <span class="drop-hint">.xlsx · puedes agregar varias</span></p>
+          <input type="file" accept=".xlsx,.xlsm" multiple hidden>
+        </div>
+        <small id="conv-pendientes" class="hint"></small>
+        <button type="button" id="btn-borrar-planillas" class="link oculto">Borrar planillas subidas</button>
+      </div>
+
+      <div class="field ancho">
+        <span class="etiqueta">Plantilla nueva de Mercado Libre</span>
+        <div class="drop" data-plantilla="1">
+          <p><b>Arrastrá la plantilla descargada de ML acá</b></p>
+          <p class="drop-o">o <button type="button" class="link">elegir archivo</button>
+            <span class="drop-hint">.xlsx · la que vas a subir a la cuenta nueva</span></p>
+          <input type="file" accept=".xlsx,.xlsm" hidden>
+        </div>
+        <small id="plantilla-hint" class="hint"></small>
+        <button type="button" id="btn-borrar-plantilla" class="link oculto">Borrar plantilla</button>
+      </div>
+    </div>
+
+    <div class="acciones">
+      <button id="btn-convertir" class="primario" disabled>Convertir al formato nuevo</button>
+      <span id="estado-conversion" class="estado"></span>
+    </div>
+
+    <div id="resultado-conversion" class="resultado oculto">
+      <h3>Conversión lista
+        <span class="eyebrow">resumen</span></h3>
+      <div id="conversion-resumen" class="avisos"></div>
+      <div id="conversion-descargas" class="acciones"></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <p>Los datos salen de tus Excel · La IA/ML solo completa celdas vacías · Caché local de 7 días</p>
+</footer>
+
+<!-- notificaciones flotantes -->
+<div id="toasts" aria-live="polite"></div>
+
+<!-- visor ampliado de fotos -->
+<div id="lightbox" class="lightbox oculto" title="Cerrar">
+  <img id="lightbox-img" alt="Foto ampliada">
+  <p id="lightbox-cap" class="lightbox-cap"></p>
+</div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
