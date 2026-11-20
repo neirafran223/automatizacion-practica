@@ -8,7 +8,6 @@ _RAIZ_WEB = os.path.dirname(os.path.dirname(os.path.dirname(
     os.path.abspath(__file__))))  # ...\PlanillasML-Web
 _RP_CANDIDATAS = [
     os.path.join(os.path.dirname(_RAIZ_WEB), 'RellenarPlanilla'),
-    r'C:\Users\neira\OneDrive\Escritorio\RellenarPlanilla',
 ]
 
 RP = None
@@ -22,13 +21,22 @@ if RP and RP not in sys.path:
 
 DISPONIBLE = RP is not None
 ERROR = None if DISPONIBLE else (
-    'No encontré la carpeta de RellenarPlanilla. Debe estar al lado de '
-    'PlanillasML-Web (ej. Escritorio\\RellenarPlanilla).')
+    'No encontré la carpeta de RellenarPlanilla. La conversión de planillas '
+    'viejas funciona igual (va incluida en la webapp); para el flujo de '
+    'generación, poné RellenarPlanilla al lado de PlanillasML-Web.')
 
 
 def importar(nombre):
-    """Importa un módulo de RellenarPlanilla. Lanza RuntimeError si no está."""
+    """Importa un módulo de RellenarPlanilla.
+
+    Si la carpeta no está, ``rellenar_planilla`` cae al subconjunto mínimo
+    embebido en la webapp (``webapp.core.rp_min``): alcanza para convertir
+    planillas viejas. El resto de los módulos siguen requiriendo la carpeta.
+    """
     if not DISPONIBLE:
+        if nombre == 'rellenar_planilla':
+            from . import rp_min
+            return rp_min
         raise RuntimeError(ERROR)
     try:
         return __import__(nombre)

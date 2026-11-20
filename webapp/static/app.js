@@ -88,9 +88,16 @@
     try {
       const d = await api('/api/init');
       if (!d.disponible) {
-        $('estado-rp').textContent = 'RellenarPlanilla no encontrada';
-        $('estado-rp').classList.add('mal');
-        alert(d.error_rp);
+        // sin RellenarPlanilla la conversión funciona igual (va incluida
+        // en la webapp); solo la generación necesita la carpeta
+        if (MOSTRAR_GENERAR) {
+          $('estado-rp').textContent = 'RellenarPlanilla no encontrada';
+          $('estado-rp').classList.add('mal');
+          alert(d.error_rp);
+        } else {
+          $('estado-rp').textContent = 'conversión lista · sin RellenarPlanilla';
+          $('estado-rp').classList.add('ok');
+        }
       } else {
         $('estado-rp').textContent = 'conectado a RellenarPlanilla';
         $('estado-rp').classList.add('ok');

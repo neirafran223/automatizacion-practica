@@ -2,8 +2,9 @@ PLANILLAS ML · CONVERTIR PLANILLA ANTIGUA AL FORMATO NUEVO
 ==========================================================
 
 Webapp local que convierte planillas viejas de Mercado Libre (ya
-rellenadas) al formato nuevo que descargás de ML. Reutiliza la lógica de
-RellenarPlanilla (debe estar al lado, en Escritorio\RellenarPlanilla).
+rellenadas) al formato nuevo que descargás de ML. La conversión viene
+incluida en esta carpeta: para convertir NO hace falta tener
+RellenarPlanilla.
 
 CÓMO ARRANCAR
 1. Doble clic a iniciar.bat
@@ -57,16 +58,22 @@ BOTONES
 
 QUÉ NO TOCA
 - No modifica tus Excel de origen.
-- No pisa RellenarPlanilla: esa app sigue funcionando igual.
+- No pisa RellenarPlanilla: si la tenés al lado, sigue funcionando
+  igual (ahí se guarda el flujo de generación, que está aparte y
+  oculto en esta app).
 
 REQUISITOS
 - Python 3.9+ (Add to PATH).
-- RellenarPlanilla al lado (Escritorio\RellenarPlanilla).
 - Archivos .xlsx o .xlsm.
+- Internet solo la primera vez (para instalar flask y compañía) y si
+  activás opciones que consultan Mercado Libre.
+- RellenarPlanilla NO es necesaria para convertir: va incluida en esta
+  carpeta. Solo la necesitarías para el flujo de generación.
 
 SOLUCIÓN DE PROBLEMAS
-- "No encontré RellenarPlanilla": debe estar en
-  Escritorio\RellenarPlanilla (al lado de PlanillasML-Web).
+- "No encontré RellenarPlanilla": no es un problema para convertir, la
+  conversión funciona igual. Solo la necesitás para el flujo de
+  generación; si lo usás, poné esa carpeta al lado de PlanillasML-Web.
 - "Categoría no encontrada": la plantilla nueva no tiene la hoja de esa
   categoría; subí la plantilla que corresponda (el error lista las que
   tiene).
